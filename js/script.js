@@ -101,5 +101,24 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	setClock('.timer', endTime);
+
+	// Modal
+
+	const btnModal = document.querySelectorAll('[data-modal]'),
+		modal = document.querySelector('.modal'),
+		modalClose = modal.querySelector('[data-close]');
+
+	btnModal.forEach((btn) => {
+		btn.addEventListener('click', () => {
+			modal.style.display = 'block';
+		});
+	});
 	
+	modal.addEventListener('click', (e) => {
+		const target = e.target;
+ 
+		if ( target && target.matches('[data-close]') ) {
+			modal.style.display = 'none';
+		}
+	});
 });
