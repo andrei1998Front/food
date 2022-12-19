@@ -104,13 +104,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Modal
 
+	function toggleModal(modal) {
+		modal.classList.toggle('show');
+
+		if (modal.matches('.show')) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'auto';
+		}
+
+		clearInterval(modalTimer);
+		
+		return;
+	}
+
 	const btnModal = document.querySelectorAll('[data-modal]'),
 		modal = document.querySelector('.modal'),
 		modalClose = modal.querySelector('[data-close]');
 
 	btnModal.forEach((btn) => {
 		btn.addEventListener('click', () => {
-			modal.style.display = 'block';
+			toggleModal(modal);
 		});
 	});
 	
@@ -118,7 +132,28 @@ document.addEventListener('DOMContentLoaded', () => {
 		const target = e.target;
  
 		if ( target && target.matches('[data-close]') ) {
-			modal.style.display = 'none';
+			toggleModal(modal);
+		} else if (target === modal) {
+			toggleModal(modal);
 		}
 	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.code == 'Escape' && modal.matches('.show')) {
+			toggleModal(modal);
+		}
+	});
+
+	const modalTimer = setTimeout(() => {toggleModal(modal)}, 30000);
+
+	function openModalFromScroll() {
+		// текущая прокрутка + размер окна просмотра - 1 пиксель для дебага
+		if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight  - 1) {
+			toggleModal(modal);
+			window.removeEventListener('scroll', openModalFromScroll);
+		}
+	}
+
+	// модальное окно в конце страницы
+	window.addEventListener('scroll', openModalFromScroll);
 });
