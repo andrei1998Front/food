@@ -159,12 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	class MenuCard {
 		constructor(src, alt, title, descr,
-					price, parentSelector) {
+					price, parentSelector, ...classes) {
 			this.src = src;
 			this.alt = alt;
 			this.title = title;
 			this.descr = descr;
 			this.price = price;
+			this.classes = classes;
 			this.transfer = 27;
 			this.parent = document.querySelector(parentSelector);
 			this.convertToUAH();
@@ -176,7 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		render() {
 			const elem = document.createElement('div');
-			elem.classList.add('menu__item')
+
+			if (this.classes.length == 0) {
+				this.classes.push('menu__item');
+			}
+
+			this.classes.forEach((className) => elem.classList.add(className));
 			elem.innerHTML = `
 					<img src="${this.src}" alt="${this.alt}">
 					<h3 class="menu__item-subtitle">${this.title}</h3>
@@ -197,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		`Меню "Фитнес"`,
 		`Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
 		229,
-		'.menu__field .container'
+		'.menu__field .container',
 	).render();
 
 	new MenuCard(
@@ -206,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		`Меню “Премиум”`,
 		`В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!`,
 		550,
-		'.menu__field .container'
+		'.menu__field .container',
 	).render();
 
 	new MenuCard(
@@ -215,6 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		`Меню "Постное"`,
 		`Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.`,
 		430,
-		'.menu__field .container'
+		'.menu__field .container',
 	).render();
 });
