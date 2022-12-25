@@ -104,27 +104,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Modal
 
-	function toggleModal(modal) {
-		modal.classList.toggle('show');
+	function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 
-		if (modal.matches('.show')) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
-
-		clearInterval(modalTimer);
-		
-		return;
-	}
+	function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimer);
+    }
 
 	const btnModal = document.querySelectorAll('[data-modal]'),
-		modal = document.querySelector('.modal'),
-		modalClose = modal.querySelector('[data-close]');
+		modal = document.querySelector('.modal');
 
 	btnModal.forEach((btn) => {
 		btn.addEventListener('click', () => {
-			toggleModal(modal);
+			openModal();
 		});
 	});
 	
@@ -132,24 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		const target = e.target;
  
 		if ( target && target.matches('[data-close]') ) {
-			toggleModal(modal);
+			closeModal();
 		} else if (target === modal) {
-			toggleModal(modal);
+			closeModal();
 		}
 	});
 
 	document.addEventListener('keydown', (e) => {
 		if (e.code == 'Escape' && modal.matches('.show')) {
-			toggleModal(modal);
+			closeModal();
 		}
 	});
 
-	const modalTimer = setTimeout(() => {toggleModal(modal)}, 30000);
+	const modalTimer = setTimeout(() => {openModal(modal)}, 30000);
 
 	function openModalFromScroll() {
 		// текущая прокрутка + размер окна просмотра - 1 пиксель для дебага
 		if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight  - 1) {
-			toggleModal(modal);
+			openModal();
 			window.removeEventListener('scroll', openModalFromScroll);
 		}
 	}
@@ -223,4 +221,87 @@ document.addEventListener('DOMContentLoaded', () => {
 		430,
 		'.menu__field .container',
 	).render();
+
+	// Forms
+
+	const forms = document.querySelectorAll('form'),
+		messages = {
+			loading: 'img/form/spinner.svg',
+			success: 'Спасибо! Мы свяжемся с Вами в близжайшее время!',
+			failure: 'Что-то пошло не так...',
+		};
+
+	function sendingForms(form) {
+
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const statusMessage = document.createElement('img');
+			statusMessage.src = messages.loading;
+			statusMessage.style.cssText = `
+				display: block;
+				margin: 0 auto;
+			`;
+			
+			form.insertAdjacentElement('beforeend', statusMessage);
+
+			const formData = new FormData(form);
+
+			const obj = {};
+
+			formData.forEach((v,i) => obj[i] = v);
+
+			fetch('server.php', {
+				method: "POST",
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(obj),
+			})
+			.then(data => data.text())
+			.then(data => {
+				console.log(data);
+				showThanksModal(messages.success);
+				statusMessage.remove();
+			})
+			.catch(() => {
+				showThanksModal(messages.failure);
+				statusMessage.remove();
+			})
+			.finally(() => {
+				form.reset();
+			});
+		});
+	}
+
+	forms.forEach((form) => sendingForms(form));
+
+	function showThanksModal(message) {
+		const prevModalDialog = document.querySelector('.modal__dialog');
+
+		prevModalDialog.classList.add('hide');
+		openModal();
+
+		const thanksModal = document.createElement('div');
+		thanksModal.classList.add('modal__dialog');
+
+		thanksModal.innerHTML = `
+			<div class="modal__dialog">
+				<div class="modal__content">
+					<div data-close class="modal__close">&times;</div>
+					<div class="modal__title">${message}</div>
+				</div>
+			</div>
+			`;
+		
+		document.querySelector('.modal').append(thanksModal);
+
+		setTimeout(() => {
+			thanksModal.remove();
+			prevModalDialog.classList.add('show');
+			prevModalDialog.classList.remove('hide');
+			closeModal();
+		}, 4000);
+	}
+	
 });

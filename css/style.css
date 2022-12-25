@@ -578,6 +578,7 @@ a {
 .modal__dialog {
   max-width: 500px;
   margin: 40px auto;
+
 }
 .modal__content {
   position: relative;
@@ -587,7 +588,7 @@ a {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   max-height: 80vh;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 .modal__close {
   position: absolute;
