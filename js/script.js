@@ -215,6 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
 			});
 		});
 
+	// axios.get(`http://localhost:3000/menu`)
+	// .then(data => {
+	// 	data.data.forEach(({img, altimg, title, descr, price}) => {
+	// 		new MenuCard(img, altimg,
+	// 					title, descr, price,
+	// 					`.menu__field .container`)
+	// 					.render();
+	// 	});
+	// });
+
 	// Forms
 
 	const forms = document.querySelectorAll('form'),
@@ -299,5 +309,110 @@ document.addEventListener('DOMContentLoaded', () => {
 			closeModal();
 		}, 4000);
 	}
+
+	//Slider
+
+	const imgArr = [
+		{
+			src: "img/slider/pepper.jpg",
+			alt: "pepper",
+		},
+
+		{
+			src: "img/slider/food-12.jpg",
+			alt: "food",
+		},
+
+		{
+			src: "img/slider/olive-oil.jpg",
+			alt: "oil",
+		},
+
+		{
+			src: "img/slider/paprika.jpg",
+			alt: "paprika",
+		},
+
+	];
+
+	const slideArr = [];
+
+	function createSlide(src, alt) {
+		const slide = document.createElement('div');
+
+		slide.classList.add(`offer__slide`);
+
+		slide.innerHTML = `
+			<img src="${src}" alt="${alt}">
+		`;
+
+		return slide;
+	}
+
+
+	imgArr.forEach((s) => slideArr.push(createSlide(s.src, s.alt)));
+
+	const slider = document.querySelector('.offer__slider-wrapper'),
+		sliderPrev = document.querySelector(`.offer__slider-prev`),
+		sliderNext = document.querySelector(`.offer__slider-next`),
+		sliderCurrent = document.querySelector(`#current`),
+		sliderTotal = document.querySelector(`#total`);
+
+	function getSlideNum(num) {
+		return (num[0] == '0') ?  +num[1]
+		:  +num;
+	};
+
+	function checkNextEl(num, arr) {
+		return (num >= arr.length - 1) ? num : num + 1;
+	}
+
+	function checkPrevEl(num) {
+		return (num <= 0) ? num : num - 1;
+	}
+
+	function checkNum(num) {
+		return (num < 10) ? `0${num}` : num;
+	}
+
+	
+
+	sliderCurrent.innerHTML = `01`;
+	sliderTotal.innerHTML = checkNum(slideArr.length);
+
+	slider.append(slideArr[0]);
+	
+
+	sliderNext.addEventListener('click', () => {
+		let current = getSlideNum(sliderCurrent.innerHTML),
+			slideNum = current - 1;
+
+		slider.innerHTML = ``;
+
+		let el = checkNextEl(slideNum, slideArr);
+		
+		slider.append(slideArr[el]);
+
+		const currentValue = (current + 1 > slideArr.length) ? current : current + 1;
+
+		sliderCurrent.innerHTML = `${checkNum(currentValue)}`;
+	});
+
+	sliderPrev.addEventListener('click', () => {
+		let current = getSlideNum(sliderCurrent.innerHTML),
+			slideNum = current - 1;
+
+		slider.innerHTML = ``;
+
+		let el = checkPrevEl(slideNum);
+		
+		slider.append(slideArr[el]);
+
+		const currentValue = (current - 1 < 1) ? current : current - 1;
+
+		sliderCurrent.innerHTML = `${checkNum(currentValue)}`;
+	});
+
+	
 	
 });
