@@ -373,6 +373,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	function toggleSlide(field, offset) {
 		field.style.transform = `translateX(-${offset}px)`;
 	}
+
+	function getValue(v) {
+		return +v.replace(/\D/g, '');
+	}
  	
 	const dotArr = document.querySelectorAll(`.dot`);
 
@@ -382,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		dot.addEventListener(`click`, (e) => {
 			const dotNum = +e.target.getAttribute(`data-dotNum`);
 
-			const offset = +width.slice(0, width.length - 2) * dotNum;
+			const offset = getValue(width) * dotNum;
 			toggleSlide(sliderField, offset)
 
 			slideIndex = dotNum + 1;
@@ -394,10 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	next.addEventListener('click', () => {
-		if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+		if (offset == getValue(width) * (slides.length - 1)) {
 			offset = 0;
 		} else {
-			offset += +width.slice(0, width.length - 2);
+			offset += getValue(width);
 		}
 		
 		toggleSlide(sliderField, offset)
@@ -416,9 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	prev.addEventListener('click', () => {
 		if (offset == 0) {
-			offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+			offset = getValue(width) * (slides.length - 1);
 		} else {
-			offset -= +width.slice(0, width.length - 2);
+			offset -= getValue(width);
 		}
 
 		toggleSlide(sliderField, offset)
