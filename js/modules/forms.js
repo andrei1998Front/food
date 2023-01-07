@@ -1,5 +1,8 @@
-function forms() {
-    const forms = document.querySelectorAll('form'),
+import {openModal, closeModal} from './modal.js';
+import {sendingForms} from '../services/services.js';
+
+function forms(formSelector, modalTimerId) {
+    const forms = document.querySelectorAll(formSelector),
 		messages = {
 			loading: 'img/form/spinner.svg',
 			success: 'Спасибо! Мы свяжемся с Вами в близжайшее время!',
@@ -8,17 +11,6 @@ function forms() {
 
 	forms.forEach((form) => bindSendingForms(form));
 
-	const sendingForms = async (url, data) => {
-		const res = await fetch(url, {
-			method: "POST",
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: data,
-		});
-
-		return await res.json(); 
-	};
 
 	function bindSendingForms(form) {
 
@@ -58,7 +50,7 @@ function forms() {
 		const prevModalDialog = document.querySelector('.modal__dialog');
 
 		prevModalDialog.classList.add('hide');
-		openModal();
+		openModal('.modal', modalTimerId);
 
 		const thanksModal = document.createElement('div');
 		thanksModal.classList.add('modal__dialog');
@@ -78,9 +70,9 @@ function forms() {
 			thanksModal.remove();
 			prevModalDialog.classList.add('show');
 			prevModalDialog.classList.remove('hide');
-			closeModal();
+			closeModal('.modal');
 		}, 4000);
 	}
 }
 
-module.exports = forms;
+export default forms;

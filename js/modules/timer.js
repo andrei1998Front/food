@@ -1,5 +1,4 @@
-function timer() {
-    const endTime = '2023-01-22';
+function timer(endTime, timerSelector) {
 
 	function setZero(num) {
 		return (num >= 0 && num < 10) ? `0${num}` : num;
@@ -54,7 +53,7 @@ function timer() {
 		}
 	}
 
-	setClock('.timer', endTime);
+	setClock(timerSelector, endTime);
 }
 
-module.exports = timer;
+export default timer;
